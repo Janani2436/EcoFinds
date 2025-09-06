@@ -1,43 +1,11 @@
-// models/cartItem.js
-
-const { DataTypes } = require('sequelize');
-const db = require('../config/db');
-const User = require('./user');
-const Product = require('./product');
-
-const CartItem = db.define('CartItem', {
-  id: {
-    type: DataTypes.INTEGER,
-    primaryKey: true,
-    autoIncrement: true,
-  },
-  userId: {
-    type: DataTypes.INTEGER,
-    allowNull: false,
-    references: { model: 'users', key: 'id' },
-    onDelete: 'CASCADE',
-  },
-  productId: {
-    type: DataTypes.INTEGER,
-    allowNull: false,
-    references: { model: 'products', key: 'id' },
-    onDelete: 'CASCADE',
-  },
-  quantity: {
-    type: DataTypes.INTEGER,
-    allowNull: false,
-    defaultValue: 1,
-    validate: {
-      min: 1,
-    },
-  },
-}, {
-  timestamps: true,
-  tableName: 'cart_items',
-});
-
-// Define associations
-CartItem.belongsTo(User, { foreignKey: 'userId' });
-CartItem.belongsTo(Product, { foreignKey: 'productId' });
-
-module.exports = CartItem;
+'use strict';
+const { Model } = require('sequelize');
+module.exports = (sequelize, DataTypes) => {
+  class CartItem extends Model {}
+  CartItem.init({
+    id: { type: DataTypes.UUID, defaultValue: DataTypes.UUIDV4, primaryKey: true },
+    quantity: { type: DataTypes.INTEGER, allowNull: false, defaultValue: 1 },
+    // Foreign keys for user and product would be defined here in a full app
+  }, { sequelize, modelName: 'CartItem', timestamps: true });
+  return CartItem;
+};

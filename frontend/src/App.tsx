@@ -1,3 +1,5 @@
+// In frontend/src/App.tsx
+
 import { Route, Routes } from 'react-router-dom';
 import Header from './components/Header';
 import AddProductPage from './pages/AddProductPage';
@@ -7,9 +9,10 @@ import LoginPage from './pages/LoginPage';
 import MyListingsPage from './pages/MyListingsPage';
 import ProductDetailPage from './pages/ProductDetailPage';
 import SignUpPage from './pages/SignUpPage';
-import DashboardPage from './pages/DashboardPage'; // Import new page
-import CartPage from './pages/CartPage'; // Import new page
-import PreviousPurchasesPage from './pages/PreviousPurchasesPage'; // Import new page
+import DashboardPage from './pages/DashboardPage';
+import CartPage from './pages/CartPage';
+import PreviousPurchasesPage from './pages/PreviousPurchasesPage';
+import ProfilePage from './pages/ProfilePage'; // <-- Import the new page
 
 function App() {
   return (
@@ -24,9 +27,10 @@ function App() {
           <Route path="/add-product" element={<AddProductPage />} />
           <Route path="/my-listings" element={<MyListingsPage />} />
           <Route path="/edit-product/:productId" element={<EditProductPage />} />
-          <Route path="/dashboard" element={<DashboardPage />} /> {/* Add new route */}
-          <Route path="/cart" element={<CartPage />} /> {/* Add new route */}
-          <Route path="/purchases" element={<PreviousPurchasesPage />} /> {/* Add new route */}
+          <Route path="/dashboard" element={<DashboardPage />} />
+          <Route path="/cart" element={<CartPage />} />
+          <Route path="/purchases" element={<PreviousPurchasesPage />} />
+          <Route path="/profile" element={<ProfilePage />} /> {/* <-- Add the new route */}
         </Routes>
       </main>
     </div>

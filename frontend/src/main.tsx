@@ -1,25 +1,28 @@
+// In frontend/src/main.tsx
+
 import React from 'react';
 import ReactDOM from 'react-dom/client';
 import { BrowserRouter } from 'react-router-dom';
-import App from './App.tsx';
+import App from './App';
+
+// 1. Import all your context providers
 import { AuthProvider } from './context/AuthContext';
-import { ProductProvider } from './context/ProductContext';
 import { CartProvider } from './context/CartContext';
+import { ProductProvider } from './context/ProductContext'; // <-- Add this import
+
 import './index.css';
 
-// The correct order is to have all context providers
-// on the outside, so that every component inside the
-// router can access them.
 ReactDOM.createRoot(document.getElementById('root')!).render(
   <React.StrictMode>
-    <AuthProvider>
-      <ProductProvider>
+    <BrowserRouter>
+      {/* 2. Nest the providers, with ProductProvider inside the others */}
+      <AuthProvider>
         <CartProvider>
-          <BrowserRouter>
+          <ProductProvider> 
             <App />
-          </BrowserRouter>
+          </ProductProvider>
         </CartProvider>
-      </ProductProvider>
-    </AuthProvider>
+      </AuthProvider>
+    </BrowserRouter>
   </React.StrictMode>,
 );

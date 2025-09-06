@@ -1,8 +1,10 @@
-import { Avatar, Box, Button, Container, Grid, TextField, Typography } from '@mui/material';
+import { Avatar, Box, Button, Container, TextField, Typography } from '@mui/material';
+import Grid from '@mui/material/Grid';
 import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import { Link, useNavigate } from 'react-router-dom';
 import { type SubmitHandler, useForm } from 'react-hook-form';
 import { useAuth } from '../context/AuthContext';
+import apiClient from '../services/apiClient';
 
 type FormValues = {
   email: string;
@@ -14,11 +16,18 @@ const LoginPage = () => {
   const { login } = useAuth();
   const { register, handleSubmit, formState: { errors } } = useForm<FormValues>();
 
-  const onSubmit: SubmitHandler<FormValues> = (data) => {
-    const dummyUser = { id: '123', displayName: 'Janani', email: data.email };
-    const dummyToken = 'fake-jwt-token-for-testing';
-    login(dummyUser, dummyToken);
-    navigate('/');
+  const onSubmit: SubmitHandler<FormValues> = async (data) => {
+    try {
+      const response = await apiClient.post('/auth/login', data);
+      const { token } = response.data;
+      if (token) {
+        login(token); // Update the global state with the new token
+        navigate('/');
+      }
+    } catch (error) {
+      console.error('Login failed:', error);
+      alert('Login Failed: Please check your email and password.');
+    }
   };
 
   return (
@@ -35,10 +44,7 @@ const LoginPage = () => {
             label="Email Address"
             autoComplete="email"
             autoFocus
-            {...register('email', { 
-              required: 'Email is required',
-              pattern: { value: /^\S+@\S+$/i, message: "Invalid email address" }
-            })}
+            {...register('email', { required: 'Email is required' })}
             error={!!errors.email}
             helperText={errors.email?.message}
           />
@@ -58,7 +64,7 @@ const LoginPage = () => {
             Sign In
           </Button>
           <Grid container justifyContent="flex-end">
-            <Grid> {/* FIXED: 'item' prop removed */}
+            <Grid>
               <Link to="/signup">{"Don't have an account? Sign Up"}</Link>
             </Grid>
           </Grid>

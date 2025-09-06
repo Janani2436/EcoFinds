@@ -1,11 +1,12 @@
 import { useState } from 'react';
 import { Avatar, Box, Button, Container, IconButton, InputAdornment, TextField, Typography } from '@mui/material';
-// We have completely removed Grid from the import line to solve the error.
 import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import Visibility from '@mui/icons-material/Visibility';
 import VisibilityOff from '@mui/icons-material/VisibilityOff';
 import { Link, useNavigate } from 'react-router-dom';
 import { type SubmitHandler, useForm } from 'react-hook-form';
+// Make sure you have your apiClient configured
+import apiClient from '../services/apiClient';
 
 type FormValues = {
   displayName: string;
@@ -22,10 +23,27 @@ const SignUpPage = () => {
   const { register, handleSubmit, formState: { errors }, watch } = useForm<FormValues>();
   const password = watch('password');
 
-  const onSubmit: SubmitHandler<FormValues> = (data) => {
-    console.log('Sign Up Data:', data);
-    alert('Account created! You can now log in.');
-    navigate('/login');
+  // --- THIS IS THE CORRECTED FUNCTION ---
+  const onSubmit: SubmitHandler<FormValues> = async (data) => {
+    try {
+      // Create the payload for the backend, mapping displayName to name
+      const payload = {
+        name: data.displayName,
+        email: data.email,
+        password: data.password,
+      };
+
+      console.log('Sending Sign Up Data:', payload);
+
+      // Make the API call to the register endpoint
+      await apiClient.post('/auth/register', payload);
+
+      alert('Account created! You can now log in.');
+      navigate('/login');
+    } catch (error) {
+      console.error('Sign up failed:', error);
+      alert('Sign Up Failed: This email may already be in use or there was a server error.');
+    }
   };
 
   const handleClickShowPassword = () => setShowPassword((show) => !show);
@@ -38,7 +56,6 @@ const SignUpPage = () => {
         <Avatar sx={{ m: 1, bgcolor: 'secondary.main' }}><LockOutlinedIcon /></Avatar>
         <Typography component="h1" variant="h5">Sign up</Typography>
         <Box component="form" onSubmit={handleSubmit(onSubmit)} noValidate sx={{ mt: 3, width: '100%' }}>
-          {/* THE FIX: Replaced the <Grid> layout with a simpler <Box> layout. */}
           <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
             <TextField
               required
@@ -55,7 +72,7 @@ const SignUpPage = () => {
               fullWidth
               id="email"
               label="Email Address"
-              {...register('email', { 
+              {...register('email', {
                 required: 'Email is required',
                 pattern: { value: /^\S+@\S+$/i, message: 'Invalid email address' }
               })}
@@ -68,7 +85,7 @@ const SignUpPage = () => {
               label="Password"
               type={showPassword ? 'text' : 'password'}
               id="password"
-              {...register('password', { 
+              {...register('password', {
                 required: 'Password is required',
                 minLength: { value: 6, message: 'Password must be at least 6 characters' }
               })}
