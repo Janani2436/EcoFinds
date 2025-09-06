@@ -1,0 +1,34 @@
+# Dependencies
+/node_modules
+
+# Environment Variables
+# This is critical for security! It prevents you from uploading secret keys.
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+# Logs
+logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# Build output folder
+/dist
+/build
+
+# Test outputs and coverage
+/coverage
+.nycrc
+
+# Optional IDE editor folders
+.vscode/
+.idea/
+
+# Optional OS generated files
+.DS_Store
+Thumbs.db
